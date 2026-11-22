@@ -5,7 +5,7 @@ export interface ITestCase {
   output: string;
 }
 
-export interface Iproblem extends Document {
+export interface IProblemBase  extends Document {
   title: string;
   description: string;
   difficulty: "easy" | "medium" | "hard";
@@ -14,6 +14,9 @@ export interface Iproblem extends Document {
   editorial?: string;
   testCase: ITestCase[];
 }
+
+export interface Iproblem extends Document, IProblemBase {}
+
 const TestCaseSchema = new mongoose.Schema<ITestCase>(
   {
     input: {
@@ -30,7 +33,7 @@ const TestCaseSchema = new mongoose.Schema<ITestCase>(
   // , {_id: false}  //This is Not Generating _id for subdocument, but it is not working as expected
 );
 
-const ProblemSchema = new mongoose.Schema<Iproblem>(
+const ProblemSchema = new mongoose.Schema<IProblemBase>(
   {
     title: {
       type: String,
@@ -61,5 +64,3 @@ const ProblemSchema = new mongoose.Schema<Iproblem>(
 
 ProblemSchema.index({ title: 1, difficulty: 1 }, { unique: true });
 export const Problem = mongoose.model<Iproblem>("Problem", ProblemSchema);
-
-//Generate a commit message for this code change: "Add Problem and TestCase models with validation and indexing"

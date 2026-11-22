@@ -60,7 +60,10 @@ export class ProblemRepository implements IProblemRepository {
     return problems;
   }
   async searchProblems(title: string): Promise<Iproblem[]> {
-    const problems = await Problem.find({ title: title });
+    const regex = new RegExp(title, "i");
+    const problems = await Problem.find({
+      $or: [{ title: regex }, { description: regex }],
+    }).sort({ createdAt: -1 });
     return problems;
   }
 }
